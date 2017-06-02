@@ -1,0 +1,105 @@
+<div class="page-content">
+    <div class="wrap">
+     <router-link :to="{ name: 'user/address'}" class="user-header bw">
+            <div class="user-header-in">
+                <div class="user-ico fl">
+                    <img :src="user_info.headimg">
+                </div>
+                <div class="user-info">
+                    <p class="fs-16">{{user_info.nickname}}</p>
+                    <p v-if="user_info.address==null || user_info.address==''" class="overHidden red">请填写您的联系方式</p>
+                    <p  v-if="user_info.address" class="overHidden">{{user_info.address}}</p>
+                </div>
+                <div class="arrow-right fr"></div>
+                <div class="clearfix"></div>
+            </div>
+        </router-link> 
+        <div class="user-statistics bw">
+        <router-link :to="{ name: 'user/events' ,params:{ user_id: user_id }}">
+                <span>{{userStatistics.events}}</span>
+                <p>参与的活动</p>
+        </router-link>
+            <router-link :to="{ name: 'user/goods' ,params:{ user_id: user_id }}">
+                <span>{{userStatistics.receiveGoods}}<i class="notification-userStatistics notification-goods"></i></span>
+                <p>收到的赞</p>
+            </router-link>
+
+            <router-link :to="{ name: 'user/comment' ,params:{ user_id: user_id }}">
+                <span>{{userStatistics.receiveGomments}}<i class="notification-userStatistics notification-comment"></i></span>
+                <p>收到的评论</p>
+             </router-link>
+            <div class="clearfix"></div>
+        </div>
+        <div class="user-memu bw">
+            <router-link :to="{ name: 'user/topic', params: { type: 'publish' , user_id: user_id}}">
+                <div class="ico fl"><img src="{{__images__}}/inc13.png"></div>
+                <div class="user-memu-content" style="border-bottom:1px solid #EEE">
+                    <div class="user-memu-text fl">我发布过的</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="user-memu-count fr">{{userStatistics.topic}}</div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </router-link>
+            <div class="clearfix"></div>
+          <router-link :to="{ name: 'user/topic', params: { type: 'myGoods' , user_id: user_id}}">
+                <div class="ico fl"><img src="{{__images__}}/ico14.png"></div>
+                <div class="user-memu-content">
+                    <div class="user-memu-text fl">我赞过的</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="user-memu-count fr">{{userStatistics.goods}}</div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+             </router-link>
+             <div class="clearfix"></div>
+           <router-link :to="{ name: 'user/topic', params: { type: 'myComments' , user_id: user_id}}">
+                <div class="ico fl"><img src="{{__images__}}/ico13.png"></div>
+                <div class="user-memu-content border-none">
+                    <div class="user-memu-text fl">我评论过的</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="user-memu-count fr">{{userStatistics.comments}}</div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+           </router-link>
+        </div>
+        <div class="user-memu bw">
+           <router-link :to="{ name: 'user/awards' ,params:{ user_id: user_id }}">
+                <div class="ico fl"><img src="{{__images__}}/ico11.png"></div>
+                <div class="user-memu-content border-none">
+                    <div class="user-memu-text fl">我的奖品</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="user-memu-count fr">{{userStatistics.awards}}</div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </router-link>
+        </div>
+
+         <div class="user-memu bw">
+            <router-link :to="{ name: 'user/feedback'}">
+                <div class="ico fl"><img src="{{__images__}}/ico10.png"></div>
+                <div class="user-memu-content border-none">
+                    <div class="user-memu-text fl text-on">问题反馈</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </router-link>
+        </div>
+
+        <div class="user-memu bw">
+            <a v-on:click="contactUs($event)">
+                <div class="ico fl"><img src="{{__images__}}/ico12.png"></div>
+                <div class="user-memu-content border-none">
+                    <div class="user-memu-text fl text-on">联系客服</div>
+                    <div class="arrow-right fr"></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </a>
+        </div>
+
+    </div>
+    </div>

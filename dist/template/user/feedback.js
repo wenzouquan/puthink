@@ -1,0 +1,3 @@
+define("./dist/template/user/feedback", [], function(require, exports, module) {
+    return '<div class="page-content">    <div class="wrap">     <form class="wrap-add bw">         <textarea name="msg" placeholder="感谢您对普象活动的支持，请问您有什么问题或建议吗？欢迎提给我们，谢谢！另外，请留下您的任一联系方式，方便我们联系到您。"></textarea>         <!-- <ul class="add-img">             <li><img src="/dist/images/Artboard@2x.png"></li>         </ul> -->            <div data-type="upload" upload="3"></div>     </form>           </div>    <div style="height:50px"></div>    <!-- 我要参与 -->   </div> <div class="bottom-fixed">        <div >            <a v-on:click="save($event)"  class="btn publish-btn">{{publish_text}}</a>        </div>    </div>';
+});

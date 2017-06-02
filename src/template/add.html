@@ -1,0 +1,21 @@
+<div class="page-content">
+    <form method="post">
+        <div class="wrap">
+            <div class="wrap-add bw">
+                <input type="hidden" name="pid" v-model=pid value="{{pid}}">
+                <input type="hidden" name="type" v-model=type value="{{type}}">
+                <textarea name="content" v-on:keyup="checkPublish($event)" v-model="content" maxlength="500" placeholder="添加你的感想..."></textarea>
+                <div data-type="upload" upload="3"></div>
+            </div>
+            <div class="wrap-add-tip" v-if="user_info.address==null || user_info.address==''" >
+                您的地址很有可能没有正确填写，请在我的页面中进行修改，以确保在您获奖时普象客服可以联系到您。
+            </div>
+        </div>
+        <div style="height:50px"></div>
+    </form>
+</div>
+<div class="bottom-fixed">
+    <div :class="disablePublish">
+        <a v-on:click="publish($event)" class="btn publish-btn">{{publish_text}}</a>
+    </div>
+</div>

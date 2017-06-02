@@ -1,0 +1,25 @@
+{
+  "name": "puthink",
+  "version": "1.0.0",
+  "description": "puthink 活动",
+  "author": "wen",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "grunt": "^0.4.5",
+    "grunt-anyreplace": "^0.1.2",
+    "grunt-asset-injector": "^0.1.0",
+    "grunt-babel": "^6.0.0",
+    "grunt-cmd-transport": "^0.5.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-csslint": "^0.4.0",
+    "grunt-contrib-cssmin": "^0.12.3",
+    "grunt-contrib-imagemin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-html2js-cmd": "^0.1.1"
+  } 
+}

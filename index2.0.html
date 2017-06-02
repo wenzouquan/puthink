@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<title>普象</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script type="text/javascript" src="/dist/js/libs.min.js"></script>
+<script type="text/javascript" src="/dist/js/puthink-1.0.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/dist/css/puthink-1.0.0.min.css">
+</head>
+<body>
+<!-- manifest="/index.appcache" -->
+ <div id="app">
+ <div class="wrap" id="header">
+        <div class="header">
+            <!--  <a onclick="history.back()" class="fl back"><span></span></a> -->
+            <router-link :to="{ name: 'index'}" class="home fl"></router-link>
+            <router-link :to="{ name: 'index'}" class="logo fl "></router-link>
+
+             <div class="title" id="app-title">普象•一起玩</div>
+             
+             <router-link :to="{ name: 'user/index'}" class="user fr"><i class="notification notification-all"></i></router-link>
+        </div>
+ </div>
+    <div id="router-view-tmp"></div>
+    <div id="router-view-cache"></div>
+</div>
+  <script type="text/javascript">
+     seajs.config({
+        base: "./dist/",
+        debug: false,
+        userVersions:'3.6',
+        versions:'6.8',
+        alias: {
+          "jweixin":"http://res.wx.qq.com/open/js/jweixin-1.0.0.js",
+          "app":"modules/app.js",
+          'router':'modules/router.js'
+          //"picLazyLoad":"http://127.0.0.1:8080/plug/zepto.picLazyLoad.js",
+        }
+      });
+       seajs.use("modules/main");
+    </script>
+ 
+</body>
+</html>

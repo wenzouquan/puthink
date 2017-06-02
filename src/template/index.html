@@ -1,0 +1,115 @@
+<!-- 首页 -->
+<ul class="nav-tab bw swiperTap nav-tab-3 nav-tab-fix">
+    <li class="active" name="index">
+        <a>当前活动
+            <div class="swiperTapLine"></div>
+        </a>
+    </li>
+    <li name="events">
+        <a>全部活动
+             <div class="swiperTapLine"></div>
+        </a>
+    </li>
+      <li v-if="enableOrderBy==1" class="fr" v-on:click="changeShowOrder($event)">
+                    <span></span>
+                    <template v-if="showOrder=='1'"><i class="ico ico_sort"></i></template>
+                    <template v-else><i class="ico ico_sort_on"></i></template>
+                    
+                </li>
+                <div class="orderList" :style="showOrder=='1'?'':'display:none'">
+                          <div class="orderListTitle">排序</div>
+                          <div v-on:click="changeOrder(1)" class="orderList-li order-ico-1">点赞最多</div>
+                          <div v-on:click="changeOrder(2)" class="orderList-li order-ico-2 active">时间正序</div>
+                          <div v-on:click="changeOrder(3)" class="orderList-li order-ico-3">时间倒序</div>
+                          <div v-on:click="changeOrder(4)" class="orderList-li order-ico-4">评论最多</div>
+                    </div>
+    <div class="clearfix"></div>
+</ul>
+
+<div class="page-content">
+    <div class="wrap">
+        <!-- 轮播图片 -->
+        <div class="banner">
+            <component-swiper :id="swiper_id"></component-swiper>
+        </div>
+
+        <div id="swiper-page-index-container">
+            <ul class="nav-tab nav-tab-3 bw swiperTap rel">
+                <li class="active" name="index">
+                    <a>当前活动
+                        <div class="swiperTapLine"></div>
+                    </a>
+                </li>
+                <li name="events">
+                    <a>全部活动
+                         <div class="swiperTapLine"></div>
+                    </a>
+                </li>
+
+                <li v-if="enableOrderBy==1" class="fr" v-on:click="changeShowOrder($event)">
+                    <span></span>
+                 <template v-if="showOrder=='1'"><i class="ico ico_sort"></i></template>
+                    <template v-else><i class="ico ico_sort_on"></i></template>
+                    
+                </li>
+                <div v-if="enableOrderBy==1" class="orderList" :style="showOrder=='1'?'':'display:none'">
+                          <div class="orderListTitle">排序</div>
+                          <div v-on:click="changeOrder(1)" data-id="1" class="orderList-li order-ico-1">点赞最多</div>
+                          <div v-on:click="changeOrder(2)" class="orderList-li order-ico-2 active">时间正序</div>
+                          <div v-on:click="changeOrder(3)" class="orderList-li order-ico-3">时间倒序</div>
+                          <div v-on:click="changeOrder(4)" class="orderList-li order-ico-4">评论最多</div>
+                    </div>
+                <div class="clearfix"></div>
+            </ul>
+            <div class="swiper-container" id="swiper-page-index" :swiperT="swiperT" :swiperH="swiperH">
+                <div class="swiper-wrapper">
+                    <div class="item swiper-slide" load=1 name="index" style="min-height: 300px">
+                     <div class="errormsgDiv" v-if="itemsload && items && items.length==0">
+                            <p class="errormsg">\（￣︶￣）/</p>
+                            <p class="errormsg2">当前还没有人发布帖子</p>
+                            <p class="errormsg2">你来发布一条吧</p>
+                    </div>
+                        <!-- 参与活动列表 -->
+                        <div class="topic-list">
+                            <component-topic-list :items="items"></component-topic-list>
+                        </div>
+                        <!-- 参与活动列表 -->
+                         <div style="height:44px"></div>
+                    </div>
+                    <div class="item swiper-slide" name="events" style="min-height: 300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+<div id="s_top" v-on:click="s_top($event)" >
+<i class="ico ico_top"></i>
+<div class="s_top_text">回到顶部</div>
+</div>
+<!-- 我要参与 disable-->
+<div class="bottom-fixed disable">
+    <div class="" >
+        <div class="fl rest-text fs-10 " style="margin-top:9px">
+            当前活动
+            <br>结束还有
+        </div>
+        <div class="fl rest-time" style="margin-top:9px"><span class="rest-day">{{expire_date.d}}</span><span class="rest-text fs-8"> 天 </span><span class="rest-but">{{expire_date.h}}</span><span class="rest-text fs-8"> 小时 </sapn><span class="rest-but">{{expire_date.m}}</span><span class="rest-text fs-8"> 分 </span></div>
+        <div class="fr">
+            <router-link :to="{ name: 'add', params: { pid: events.id ,title:events.topic}}" class="join-btn"></router-link>
+        </div>
+    </div>
+</div>
+<div class="popupBg" style="display: none;"></div>
+<div class="eventsDialog">
+    <div class="eventsDialogImg"><img :src="events.picUrl?events.picUrl+'?x-oss-process=image/resize,w_500':''" style="width: 100%; max-height:150px"></div>
+    <div class="eventsDialogtitle">
+        <p class="eventsDialogtitle1">活动正在进行中</p>
+        <p class="eventsDialogtitle2">{{events.title}}</p>
+    </div>
+    <div class="eventsDialogDetail">
+        {{events.info}}
+    </div>
+    <div class="eventsDialogbottom" v-on:click="hideEventsDialog($event)" >知道了</div>
+</div>

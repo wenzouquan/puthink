@@ -1,0 +1,130 @@
+<div class="page-content">
+    <div class="wrap">
+        <div class="banner eventsBanner">
+            <img :src="event.picUrl">
+            <div class="events-join">参与人数
+                <br><span><font>{{event.topic_count}}</font>人</span></div>
+
+                <div class="banner-info" v-if="showMore==0">
+                    <div class="banner-info-title"> #{{event.title}}#</div>
+                    <div class="banner-info-i">{{event.show_info}} <a v-if="showMoreText==0" v-on:click="showMoreFuc()">更多</a></div>
+                </div>
+
+                 <div class="banner-info banner-info-more" v-if="showMore==1">
+                    <div class="banner-info-title"> #{{event.title}}#</div>
+                    <div class="banner-info-i"> {{event.info}} <a v-on:click="showMoreFuc()">收起</a></div>
+                </div>
+
+        </div>
+           
+        <div id="swiper-page-EventAward-container">
+            <ul class="nav-tab nav-tab-3 bw swiperTap rel">
+                <li :class="type=='awards'?'active':''" type="awards">
+                    <a>获奖用户<div class="swiperTapLine"></div></a>
+                </li>
+                <li :class="type=='all'?'active':''" type="all">
+                    <a>查看所有<div class="swiperTapLine"></div></a>
+                </li>
+                <li class="fr" v-on:click="changeShowType($event)">
+                   
+                    <template v-if="showType=='table'"><i class="ico ico_table_on"></i></template>
+                    <template v-else><i class="ico ico_table"></i></template>
+                </li>
+
+                <li class="fr" v-on:click="changeShowOrder($event)">
+                    <span></span>
+                  <template v-if="showOrder=='1'"><i class="ico ico_sort"></i></template>
+                    <template v-else><i class="ico ico_sort_on"></i></template>
+
+                    
+                </li>
+                <div class="orderList" :style="showOrder=='1'?'':'display:none'">
+                          <div class="orderListTitle">排序</div>
+                          <div v-on:click="changeOrder(1)" data-id="1" class="orderList-li order-ico-1">点赞最多</div>
+                          <div v-on:click="changeOrder(2)" class="orderList-li order-ico-2 active">时间正序</div>
+                          <div v-on:click="changeOrder(3)" class="orderList-li order-ico-3">时间倒序</div>
+                          <div v-on:click="changeOrder(4)" class="orderList-li order-ico-4">评论最多</div>
+                </div>
+    <div class="clearfix"></div>
+                <div class="clearfix"></div>
+            </ul>
+            <div class="swiper-container" id="swiper-page-EventAward" :swiperT="swiperT" :swiperH="swiperH">
+                <div class="swiper-wrapper">
+                    <div class="item swiper-slide" load=1  style="min-height: 300px">
+                    
+                    <div class="errormsgDiv" v-if="itemsload && items.length==0">
+                            <p class="errormsg">\（￣︶￣）/</p>
+                            <p class="errormsg2">获奖用户还在激动评选中</p>
+                            <p class="errormsg2">快去点个赞吧</p>
+                            <div style="height:44px"></div>
+                    </div>
+                        <!-- 参与活动列表 -->
+                        <div :class="showType=='list'?'topic-list':'topic-list none'">
+                            <component-topic-list :items="items"></component-topic-list>
+                            <div class="clearfix"></div>
+                             <div style="height:44px"></div>
+                        </div>
+                        <!-- 参与活动列表 -->
+
+                        <!-- 参与活动列表2 -->
+                        <div :class="showType=='table'?'topic-list2':'topic-list2 none'">
+                            <template v-for="item in items">
+                                <router-link :to="{ name: 'topic', params: { id: item.id }}">
+                                    <img onerror="this.src='{{__images__}}/errorImg.png'" :src="item.coverImage+'?x-oss-process=image/resize,m_fill,h_300,w_300'">
+                                </router-link>
+                            </template>
+                            <div class="clearfix"></div>
+                             <div style="height:44px"></div>
+                        </div>
+                        
+                        <!-- 参与活动列表2 -->
+                    </div>
+                    <div class="item swiper-slide" style="min-height: 300px">
+                    
+                    <div class="errormsgDiv" v-if="items2load && items2 && items2.length==0">
+                            <p class="errormsg">\（￣︶￣）/</p>
+                            <p class="errormsg2">当前还没有人发布帖子</p>
+                            <p class="errormsg2">你来发布一条吧</p>
+                    </div>
+
+                        <!-- 参与活动列表 -->
+                        <div :class="showType=='list'?'topic-list':'topic-list none'">
+                            <component-topic-list :items="items2"></component-topic-list>
+                             <div class="clearfix"></div>
+                             <div style="height:44px"></div>
+                        </div>
+                        <!-- 参与活动列表 -->
+                        <!-- 参与活动列表2 -->
+                        <div :class="showType=='table'?'topic-list2':'topic-list2 none'">
+                            <template v-for="item in items2">
+                                <router-link :style="imgHeight"  :to="{ name: 'topic', params: { id: item.id }}">
+                                    <img   onerror="this.src='{{__images__}}/errorImg.png'" :src="item.coverImage+'?x-oss-process=image/resize,m_fill,h_300,w_300'">
+                                </router-link>
+                            </template>
+                            <div class="clearfix"></div>
+                             <div style="height:44px"></div>
+                        </div>
+                        <!-- 参与活动列表2 -->
+                         
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="s_top" v-on:click="s_top($event)" ><i class="ico ico_top"></i><div class="s_top_text">回到顶部</div></div>
+
+
+<!-- 我要参与 disable-->
+<div class="bottom-fixed disable">
+    <div class="" >
+        <div class="fl rest-text fs-10 " style="margin-top:9px">
+            当前活动
+            <br>结束还有
+        </div>
+        <div class="fl rest-time" style="margin-top:9px"><span class="rest-day">{{expire_date.d}}</span><span class="rest-text fs-8"> 天 </span><span class="rest-but">{{expire_date.h}}</span><span class="rest-text fs-8"> 小时 </sapn><span class="rest-but">{{expire_date.m}}</span><span class="rest-text fs-8"> 分 </span></div>
+        <div class="fr">
+            <router-link :to="{ name: 'add', params: { pid: event.id ,title:event.topic}}" class="join-btn"></router-link>
+        </div>
+    </div>
+</div>

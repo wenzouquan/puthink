@@ -1,0 +1,27 @@
+<div class="page-content">
+    <div class="wrap goods">
+<template v-for="item in items">
+        <router-link onclick="app.notificationRead(this)" data-type="goods" :from-user-id="user_id" :data-id="item.topic.id" class="media bw" :to="{ name: 'topic', params: { id: item.topic.id }}" >
+                <div class="media-ico user-ico fl mgt5">
+                    <img :src="item.user.headimg">   
+                </div>
+                <div class="media-body">
+                    <div class="fl mgt5">
+                        <p >{{item.user.nickname}}</p>
+                        <span class="light-color">{{toTitle}} | {{item.time_tran}}</span>
+                    </div>
+                    
+                    <div class="arrow-right fr mgt10"></div>
+                    <div class="fr pic">
+                        <img :src="item.topic.coverImage+'?x-oss-process=image/resize,m_fill,h_300,w_300'">
+                    </div>
+                     <span  v-if="item.remind == 1 && user_id==0" class="tag-new fr mgt10">new</span>
+                     <div class="clearfix"></div>
+                    <div class="line" ></div>
+                </div>
+                <div class="clearfix"></div>
+                
+        </router-link >
+</template>   
+    </div>
+</div>
