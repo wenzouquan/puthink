@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     //var app = require("app");
     var controller = {};
     controller.vue = function() {
-       controller.vm= new Vue({
+        controller.vm = new Vue({
             router: router,
             data: function() {
                 return {
@@ -26,7 +26,7 @@ define(function(require, exports, module) {
                     return;
                 }
                 $('#pageAdd').find('[data-type="upload"]').each(function(i, _this) {
-                   app.MultipleUpload(_this);
+                    app.MultipleUpload(_this);
                 });
                 this.mounted = 1;
                 //app.setTitle(this.);
@@ -34,18 +34,18 @@ define(function(require, exports, module) {
 
                 var _this = this;
                 //监听上传图片
-                // $('#pageAdd').find('[data-type="upload"]').on("BoxUpload", function() {
-                //         _this.checkPublish();
-                //     });
-                    //监听text
+                $('#pageAdd').find('[data-type="upload"]').on("BoxUpload", function() {
+                    _this.checkPublish();
+                });
+                //监听text
                 app.setTitle(this.$route.params.title);
 
             },
 
             methods: {
                 checkPublish: function(e) {
-                   // var imglength = $("#pageAdd").find(".photoList-content li .imgList-file_url").length;
-                    if (this.content) {
+                    var imglength = $("#pageAdd").find(".photoList-content li .imgList-file_url").length;
+                    if (this.content && imglength > 0) {
                         this.disablePublish = "";
                     } else {
                         this.disablePublish = "disable";
@@ -57,13 +57,13 @@ define(function(require, exports, module) {
                     var imglength = $("#pageAdd").find(".photoList-content li .imgList-file_url").length;
                     var limit = liLength - imglength - 1;
                     if (this.content === "" && imglength > 0) {
-                        app.alert("请先添加你的感想...");
+                        app.alert("请添加关于图片的描述");
                         return false;
                     }
-                    // if (this.content !== "" && imglength === 0) {
-                    //     app.alert("请添加至少一张图片");
-                    //     return false;
-                    // }
+                    if (this.content !== "" && imglength === 0) {
+                        app.alert("请添加至少一张图片");
+                        return false;
+                    }
                     if (_this.is_publish === 1) {
                         return;
                     }
@@ -95,14 +95,21 @@ define(function(require, exports, module) {
                             //console.log(res);
                             // console.log(typeof(pageIndex));
                             var pageIndexMv = app.getVm("index");
-                            if (typeof(pageIndexMv) != "undefined") {
+                            // if (typeof(pageIndexMv) != "undefined") {
+                            if (pageIndexMv && pageIndexMv.items) {
                                 var list = [res.msg];
                                 pageIndexMv.items = list.concat(pageIndexMv.items);
                                 // $("#pageIndex").find(".scrollActive").attr("scrolltop",0);
                                 // $("#pageIndex").find('.page-content').scrollTop(0);
                             }
                             app.alert('恭喜你，发布成功', function() {
-                                _this.$router.push({ name: 'index' });
+                                _this.$router.push({
+                                    name: 'eventAward',
+                                    params: {
+                                        id: _this.pid,
+                                        type: 'awards'
+                                    }
+                                });
 
                                 //_this.$router.go(-1);
                             });

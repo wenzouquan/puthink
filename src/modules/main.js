@@ -2,7 +2,7 @@ define(function(require) {
     var PuthinkApp = require('app');
     //vue 组件
     require('modules/component');
-   // console.log();
+    // console.log();
     //zach
     //配置文件
     var params = {
@@ -12,14 +12,16 @@ define(function(require) {
         plugUrl: '/dist/',
         //loginUrl: 'http://p.pushthink.com/', //登录域名 
         loginUrl: 'http://login.pushthink.com/', //登录域名 
-        debug: seajs.data.debug?seajs.data.debug:false,
-        versions: seajs.data.versions?seajs.data.versions:'6.8',
-        userVersions: seajs.data.userVersions?seajs.data.userVersions:'6.8'
+        debug: seajs.data.debug ? seajs.data.debug : false,
+        versions: seajs.data.versions ? seajs.data.versions : '6.8',
+        userVersions: seajs.data.userVersions ? seajs.data.userVersions : '6.8'
     };
-    if(params.debug){
-      params.loginUrl="http://p.pushthink.com/";
-      params.apiDomain="http://superadmin2.pushthink.com";
+    if (params.debug) {
+        params.loginUrl = "http://p.pushthink.com/";
+        params.apiDomain = "http://superadmin.pushthink.com";
     }
+
+
     //app 实例之后 ， 只执行一次
     PuthinkApp.afterInit = function() {
         var _hmt = _hmt || [];
@@ -28,7 +30,7 @@ define(function(require) {
                 return false;
             }
             var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?702ae87feb905577a0b18e9b8cb05b6f";
+            hm.src = "https://hm.baidu.com/hm.js?6562abab932474110b6161aae7a8653b";
             hm.id = "hm-baidu";
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
@@ -50,17 +52,58 @@ define(function(require) {
             $("#header").find(".home").hide();
             $("#header").find(".user").hide();
         }
+        //帖子详情 、活动主题 设置微信分享
+        if ((name == "topic" || name == 'eventAward') && app.getVm(name)) {
+            app.getVm(name).$watch('event', function() {
+                var id = name == "topic" ? this.event.id : this.event.eventId;
+                var wxShareData = {
+                    title: this.event.title, // 分享标题
+                    imgUrl: this.event.picUrl, // 分享图标
+                    desc: this.event.showInfo,
+                    url: 'http://' + window.location.host + '/index.html#/eventAward/' + id + '/awards'
+                };
+                app.wxShare(wxShareData);
+            });
+        } else { //默认分享
+            app.setWxShareData();
+        }
     };
     //实例化app
     window.app = new PuthinkApp(params);
+
+    //帖子详情 、活动主题 设置微信分享
+    // function setWxShare() {
+
+    //     console.log('setWxShare');
+    //     var item = {};
+    //     if (name == "topic") {
+    //         console.log(app.getVm('topic'));
+    //         item = app.getVm('topic').event;
+    //     }
+    //     if (name == "eventAward") {
+    //         item = app.getVm('eventAward').event;
+    //         item.id = item.eventId;
+    //     }
+    //     console.log(item);
+    //     var wxShareData = {
+    //         title: item.title, // 分享标题
+    //         imgUrl: item.picUrl, // 分享图标
+    //         desc: item.showInfo,
+    //         url: 'http://' + window.location.host + '/index.html#/eventAward/' + item.id + '/awards'
+    //     };
+    //     //  app.wxShare(wxShareData);
+    // }
+    // $(document).on('pageShow', setWxShare);
+    // app.params.callBacks.pageShow.add(setWxShare);
+
     if (app.params.debug) {
-        app.login(function() {
-            require.async("template/component", function(html) {
-                $("body").append(html);
-                app.init();
-                app.notification();
-            });
+        // app.login(function() {
+        require.async("template/component", function(html) {
+            $("body").append(html);
+            app.init();
+            app.notification();
         });
+        // });
     } else {
         app.loginByYouZan(function() {
             require.async("template/component", function(html) {

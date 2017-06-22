@@ -19,6 +19,26 @@ define(function(require, exports, module) {
             app.params[i] = params[i];
         }
         var fun = {
+            setWxShareData: function() {
+                if (app.params.DefShareData) {
+                    app.wxDefShare(app.params.DefShareData);
+                } else {
+                    app.get("/BoxApi/Events/swiper", {
+                        id: 'puthinkWxShareData'
+                    }, function(data) {
+                        if (data && data[0]) {
+                            var item = data[0];
+                            app.params.DefShareData = {
+                                title: item.title,
+                                url: item['url'],
+                                imgUrl: item['picUrl'],
+                                desc: item['content']
+                            };
+                            app.wxDefShare(app.params.DefShareData);
+                        }
+                    });
+                }
+            },
             //实例化VueApp
             init: function() {
                 //创建和挂载根实例
@@ -30,27 +50,10 @@ define(function(require, exports, module) {
                     },
                     mounted: function() {
                         this.fetchData();
-                        this.setWxShareData();
+                        // app.setWxShareData();
                     },
                     methods: {
-                        setWxShareData: function() {
-                            console.log("setWxShareData");
-                            app.get("/BoxApi/Events/swiper", { id: 'puthinkWxShareData' }, function(data) {
-                                if (data && data[0]) {
-                                    var item = data[0];
-                                    var wxShareData = {
-                                        title: item.title,
-                                        url: item['url'],
-                                        imgUrl: item['picUrl'],
-                                        desc: item['content']
-                                    };
-                                    // console.log(wxShareData);
 
-                                    app.wxDefShare(wxShareData);
-                                    //console.log(app.params.wxShareData);
-                                }
-                            });
-                        },
                         fetchData: function() {
                             //  console.log(this.$route);
                             var name = this.$route.name;
@@ -75,12 +78,16 @@ define(function(require, exports, module) {
                             if ($(id).length > 0) {
                                 $(id).removeClass("cached").addClass("pageShow");
                                 $(".loadingPage").remove();
-                                if (typeof(app.pageShow) == "function") {
-                                    app.pageShow({ name: name });
-                                }
+
                                 var pageVm = app.getVm(name);
                                 if (pageVm) {
                                     typeof(pageVm.pageShow) === "function" ? pageVm.pageShow(): '';
+                                }
+                                if (typeof(app.pageShow) == "function") {
+                                    app.pageShow({
+                                        name: name,
+                                        vm: pageVm
+                                    });
                                 }
                             } else {
                                 app.routePage(name, wrap);
@@ -107,13 +114,14 @@ define(function(require, exports, module) {
                     desc: params['desc'],
                     success: function() {
                         // 用户确认分享后执行的回调函数
-                        app.wxDefShare();
+                        // app.wxDefShare();
                     },
                     cancel: function() {
                         // 用户取消分享后执行的回调函数
                     }
                 };
                 app.wx(function(wx) {
+                    console.log(data);
                     wx.onMenuShareTimeline(data);
                     wx.onMenuShareAppMessage(data);
                     callblack ? callblack() : '';
@@ -145,11 +153,13 @@ define(function(require, exports, module) {
                     $(wrapContent).hide();
                     $(wrapContent).appendTo(wrap);
                     var pageId = "#" + id;
-                    var options = { 'name': name };
+                    var options = {
+                        'name': name
+                    };
                     require.async("modules/" + name, function(controller) {
                         controller.vue(options);
                         $(pageId).show();
-                        $(".loadingPage").remove(); 
+                        $(".loadingPage").remove();
                         if ($(pageId).find(".page-content").length > 0) {
                             app.scrollPreventDefault($(pageId).find(".page-content").eq(0));
                         }
@@ -157,6 +167,7 @@ define(function(require, exports, module) {
                             controller.pageShow(options);
                         }
                         if (typeof(app.pageShow) == 'function') {
+                            options.vm = controller.vm;
                             app.pageShow(options);
                         }
                     });
@@ -165,11 +176,13 @@ define(function(require, exports, module) {
             },
             //禁用滚动
             scrollPreventDefault: function(pageContent) {
+
                 function pageContentTouchstart() {
                     var el = this;
                     var top = el.scrollTop,
                         totalScroll = el.scrollHeight,
                         currentScroll = top + el.offsetHeight;
+
                     if (top === 0) {
                         $(el).attr("_isScroller", 1);
                         el.scrollTop = 2;
@@ -205,6 +218,16 @@ define(function(require, exports, module) {
 
                 //当pageContent顶部或底部， body是不能能滚动
                 $("body").unbind('touchmove', preventDefault).bind("touchmove", preventDefault);
+
+                //评价用户作品添加滚动效果
+                $(".add-comment-info").on("touchmove", function(event) {
+                    event.stopPropagation();
+                });
+                $(".add-comment-info").on("touchend", function(event) {
+                    event.stopPropagation();
+                    document.body.scrollTop = 0;
+                });
+
                 //头部不能能滚动
                 $("#header").unbind('touchmove').bind("touchmove", function(evt) {
                     evt.preventDefault();
@@ -403,8 +426,8 @@ define(function(require, exports, module) {
                             var data = res['data'];
                             app.setUserInfo(data);
                             app.hideLoad();
-                            window.location.href = "/";
                             callblack ? callblack() : "";
+                            window.location.href = "/";
                         } else {
                             app.confirm({
                                 text: '授权登录发现异常，是否重新登录？',
@@ -483,7 +506,10 @@ define(function(require, exports, module) {
                 $("body").append("<div class='dialog'>" + msg + "</div>");
                 var width = $(".dialog").width() / 2;
                 var h = $(".dialog").height() / 2;
-                $(".dialog").css({ 'margin-left': "-" + width + "px", 'margin-top': "-" + h + "px" });
+                $(".dialog").css({
+                    'margin-left': "-" + width + "px",
+                    'margin-top': "-" + h + "px"
+                });
                 setTimeout(function() {
                     $(".dialog").remove();
                     typeof(callblack) == "function" ? callblack(): "";
@@ -540,7 +566,10 @@ define(function(require, exports, module) {
                 var UserInfo = app.getUserInfo();
                 if (UserInfo && UserInfo.uuid) {
                     if (args && args.length > 0 && args[0]['name']) {
-                        args[args.length] = { name: 'uuid', 'value': UserInfo.uuid };
+                        args[args.length] = {
+                            name: 'uuid',
+                            'value': UserInfo.uuid
+                        };
                     } else {
                         args['uuid'] = UserInfo.uuid;
                     }
@@ -605,7 +634,9 @@ define(function(require, exports, module) {
                 url = app.params.plugUrl + url;
                 var key = app.base64_encode(url);
                 var content = app.params.urlCache[key] || app.cache().get(key);
-                var data = { randCode: app.getVersions() };
+                var data = {
+                    randCode: app.getVersions()
+                };
                 // if (versions === false) {
                 //     var data = {};
                 // }
@@ -962,25 +993,24 @@ define(function(require, exports, module) {
             },
             //微信默认分享
             wxDefShare: function(params) {
-                app.wxJs(function() {
-                    if (typeof(params) == "undefined") {
-                        var wxShareData = {
-                            title: '跟着普象君有肉吃', // 分享标题
-                            imgUrl: 'https://www.lgstatic.com/thumbnail_300x300/image1/M00/00/47/Cgo8PFTUXOOAbTbtAAA-0t30W6k220.jpg', // 分享图标
-                            desc: '等你好久了，终于来了',
-                        };
-                    } else {
-                        wxShareData = params;
-                    }
-                    app.wxShare(wxShareData);
-                });
+
+                if (typeof(params) == "undefined") {
+                    var wxShareData = {
+                        title: '跟着普象君有肉吃', // 分享标题
+                        imgUrl: 'https://www.lgstatic.com/thumbnail_300x300/image1/M00/00/47/Cgo8PFTUXOOAbTbtAAA-0t30W6k220.jpg', // 分享图标
+                        desc: '等你好久了，终于来了',
+                    };
+                } else {
+                    wxShareData = params;
+                }
+                app.wxShare(wxShareData);
+
             },
             // get vue vm
             getVm: function(name) {
                 if (typeof name == 'string') {
                     name = "modules/" + name;
-                    var seaMod =  seajs.Module.get(require.resolve(name)) ;
-                    return  seaMod && seaMod.exports && seaMod.exports.vm;
+                    return seajs.Module.get(require.resolve(name)) && seajs.Module.get(require.resolve(name)).exports && seajs.Module.get(require.resolve(name)).exports.vm;
                 } else {
                     return null;
                 }
@@ -1020,12 +1050,19 @@ define(function(require, exports, module) {
                 var type = $(obj).attr("data-type");
                 var id = $(obj).attr("data-id");
                 var from_user_id = $(obj).attr("from-user-id");
-                $.get(app.params.apiDomain + "/BoxApi/Events/notificationRead", { id: id, type: type, from_user_id: from_user_id, uuid: uuid });
+                $.get(app.params.apiDomain + "/BoxApi/Events/notificationRead", {
+                    id: id,
+                    type: type,
+                    from_user_id: from_user_id,
+                    uuid: uuid
+                });
             },
             //点赞
             add_goods: function(id, callblack) {
                 app.showLoad();
-                app.get("/BoxSns/Home/Index/add_goods", { id: id }, function(data) {
+                app.get("/BoxSns/Home/Index/add_goods", {
+                    id: id
+                }, function(data) {
                     app.hideLoad();
                     if (data.error == 1) {
                         app.alert(data.msg);

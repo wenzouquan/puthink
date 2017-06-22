@@ -92,8 +92,14 @@ define(function(require, exports, module) {
                     if (page === "") {
                         return;
                     }
-                    app.get("/BoxApi/Events/topic", { type: this.type, pid: this.$route.params.id, p: page, orderBy: this.orderBy }, function(data) {
+                    app.get("/BoxApi/Events/topic", {
+                        type: this.type,
+                        pid: this.$route.params.id,
+                        p: page,
+                        orderBy: this.orderBy
+                    }, function(data) {
                         if (_this.event === "") {
+                            data.event.eventId = data.event.id;
                             _this.event = data.event;
                             _this.event.show_info = _this.cutString(_this.event.info, 34);
                             if (_this.event.info.length <= 34) {
@@ -143,7 +149,7 @@ define(function(require, exports, module) {
                     this.orderBy = orderId;
                     $("#pageEventAward").find(".orderList-li").removeClass("active");
                     $("#pageEventAward").find(".order-ico-" + orderId).addClass("active");
-                   // $("#pageEventAward .topic-list img").attr("lazyloadpic","true");
+                    // $("#pageEventAward .topic-list img").attr("lazyloadpic","true");
                     this.fetchData();
                 },
                 showMoreFuc: function() {

@@ -6,9 +6,9 @@
           <input type="hidden" name="pid" v-model=pid value="{{pid}}">
           <input type="hidden" name="type" v-model=type value="{{type}}">
           <input type="hidden" name="to_comment_id" v-model=comment_id value="{{comment_id}}">
-         <textarea name="content" maxlength="500" v-model="content" :placeholder="placeholder"></textarea>
+         <textarea class="add-comment-info" name="content" maxlength="500" v-model="content" :placeholder="placeholder"></textarea>
      </div>
-       
+
     </div>
     <div style="height:50px"></div>
 </form>
@@ -18,4 +18,4 @@
              <a v-on:click="publish($event)"  class="btn publish-btn">{{publish_text}}</a>
         </div>
     </div>
- <!-- 留言 或者 回复 --> 
+ <!-- 留言 或者 回复 -->

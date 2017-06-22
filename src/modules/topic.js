@@ -20,6 +20,8 @@ define(function(require, exports, module) {
                     page: 1,
                     mounted: 0,
                     user_info: {},
+                    event: {},
+
 
                 };
             },
@@ -59,11 +61,13 @@ define(function(require, exports, module) {
                 fetchData: function() {
                     var _this = this;
                     this.placeholder = this.$route.params.placeholder;
-                    app.get("/BoxApi/Events/topicDetail", { id: _this.$route.params.id }, function(data) {
+                    app.get("/BoxApi/Events/topicDetail", {
+                        id: _this.$route.params.id
+                    }, function(data) {
                         if (data && data.id) {
                             _this.item = data;
                             _this.good_text = data.has_good ? '已赞' : '点赞';
-                           // controller.pageShow();
+                            _this.event = data.events;
                         }
                     });
                     this.loadComment();
@@ -71,7 +75,10 @@ define(function(require, exports, module) {
                 loadComment: function() {
                     //评论列表
                     var _this = this;
-                    app.get("/BoxApi/Events/comment", { id: _this.$route.params.id, p: this.page }, function(data) {
+                    app.get("/BoxApi/Events/comment", {
+                        id: _this.$route.params.id,
+                        p: this.page
+                    }, function(data) {
                         if (data.list) {
                             var list = data.list ? data.list : [];
                             _this.commentList = _this.commentList.concat(list);
@@ -83,7 +90,14 @@ define(function(require, exports, module) {
                 showAddComment: function() {
                     var placeholder = "回复" + this.item.user.nickname + "(楼主)";
                     var comment_id = 0;
-                    this.$router.push({ name: 'addComment', params: { pid: this.$route.params.id, comment_id: comment_id, placeholder: placeholder } });
+                    this.$router.push({
+                        name: 'addComment',
+                        params: {
+                            pid: this.$route.params.id,
+                            comment_id: comment_id,
+                            placeholder: placeholder
+                        }
+                    });
                 },
                 delTopic: function() {
                     var pid = this.$route.params.id;
@@ -91,7 +105,9 @@ define(function(require, exports, module) {
                     app.confirm({
                         'text': '确认删除帖子吗？',
                         'yes': function() {
-                            app.get("/BoxSns/Home/Index/del_topic", { id: pid }, function(data) {
+                            app.get("/BoxSns/Home/Index/del_topic", {
+                                id: pid
+                            }, function(data) {
                                 if (data.error == '0') {
                                     $("[topic-item='" + pid + "']").hide();
                                     app.alert("恭喜你，删除成功");
@@ -103,7 +119,7 @@ define(function(require, exports, module) {
                         },
                     });
                 },
-                share: function(em,shareDiv) {
+                share: function(em) {
                     var obj = $(em.currentTarget);
                     var url = "http://" + window.location.host + "/#/topic/" + $(obj).attr("id");
                     app.showLoad();
@@ -120,12 +136,9 @@ define(function(require, exports, module) {
                             // 用户取消分享后执行的回调函数
                         }
                     };
-                   // console.log(params);
                     app.wxShare(params, function() {
-                        if(shareDiv!==0){
-                             $(".pageShow").append('<div id="shareDiv"  onclick="$(this).remove()"></div>');
-                             app.hideLoad();
-                        }
+                        $(".pageShow").append('<div id="shareDiv"  onclick="$(this).remove()"></div>');
+                        app.hideLoad();
                     });
                 },
                 previewImage: function(_this) {
@@ -143,7 +156,6 @@ define(function(require, exports, module) {
                     })
 
                 },
-
                 add_goods: function(id) {
                     var indexVm = app.getVm("index");
                     var items = indexVm ? indexVm.items : '';
@@ -161,7 +173,10 @@ define(function(require, exports, module) {
                             item.good_count++;
                             item.goods_count++;
                             //点赞头像减加一个
-                            goodLists.push({ 'user': user, 'user_id': user.user_id });
+                            goodLists.push({
+                                'user': user,
+                                'user_id': user.user_id
+                            });
                         } else {
                             item.has_good = 0;
                             item.good_count--;
@@ -218,7 +233,14 @@ define(function(require, exports, module) {
                     app.handle(params);
                     //回应
                     $("#handle .handle-options-one").eq("0").click(function(event) {
-                        _this.$router.push({ name: 'addComment', params: { 'pid': pid, 'comment_id': id, placeholder: placeholder } });
+                        _this.$router.push({
+                            name: 'addComment',
+                            params: {
+                                'pid': pid,
+                                'comment_id': id,
+                                placeholder: placeholder
+                            }
+                        });
                     });
                     //删除
                     $("#handle .handle-options-one").eq("1").click(function(event) {
@@ -227,7 +249,9 @@ define(function(require, exports, module) {
                         app.confirm({
                             'text': '确认删除这条评论吗？',
                             'yes': function() {
-                                app.get("/BoxSns/Home/Index/del_comment", { comment_id: comment_id }, function(data) {
+                                app.get("/BoxSns/Home/Index/del_comment", {
+                                    comment_id: comment_id
+                                }, function(data) {
                                     if (data.error == '0') {
                                         $(".comment-list").find("[data-id='" + comment_id + "']").hide();
                                         _this.item.comment_count--;
@@ -254,12 +278,6 @@ define(function(require, exports, module) {
             }
         }).$mount('#app');
     };
-
-    // controller.pageShow=function(){
-    //      var em ={};
-    //      em.currentTarget = $("#pageTopic").find(".topic-share");
-    //      controller.vm.share(em,0);
-    // }
     module.exports = controller;
 
 });

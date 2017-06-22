@@ -943,7 +943,7 @@ svg rect {
     margin-bottom: 3px;
 }
 
-.active .ico-goods {
+.topic-act .active .ico-goods,.topic-bnts .active .ico-goods{
     background-image: data-uri('../images/ico2-on@2x.png');
 }
 
